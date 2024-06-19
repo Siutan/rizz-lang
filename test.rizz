@@ -1,4 +1,4 @@
-#fileName: test.rizz
+# test.rizz
 
 nocap myName = "jeff";
 huh myAge = 28;

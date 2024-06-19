@@ -3,33 +3,33 @@ import re
 
 def tokenize(code):
     token_specification = [
-        ("KEYWORD", r"(nocap|huh|finna|yap|sigma)"),  # Keywords
-        ("ASSIGN", r"="),  # Assignment operator
-        ("END", r";"),  # Statement terminator
-        ("ID", r"[A-Za-z_]\w*"),  # Identifiers
-        ("STRING", r"\".*?\""),  # String literals
-        ("LPAREN", r"\("),  # Left parenthesis
-        ("RPAREN", r"\)"),  # Right parenthesis
-        ("LBRACE", r"{"),  # Left curly brace
-        ("RBRACE", r"}"),  # Right curly brace
-        ("TEMPLATE_LITERAL", r"`[^`]*`"),  # Template literals (ensure proper handling)
-        ("INCREMENT", r"\+\+"),  # Increment operator
-        ("DECREMENT", r"--"),  # Decrement operator
-        ("OP", r"[+*\/-]"),  # Arithmetic operators
-        ("NUMBER", r"\d+(\.\d*)?"),  # Integer or decimal number
-        ("COMMA", r","),  # Comma
-        ("LT", r"<"),  # Less than
-        ("GT", r">"),  # Greater than
-        ("EQ", r"=="),  # Equal to
-        ("GE", r">="),  # Greater than or equal to
-        ("LE", r"<="),  # Less than or equal to
-        ("NE", r"!="),  # Not equal to
-        ("AND", r"&&"),  # Logical and
-        ("OR", r"\|\|"),  # Logical or
-        ("NEWLINE", r"\n"),  # Line endings
-        ("COMMENT", r"#.*"),  # Single-line comments
-        ("SKIP", r"[ \t]+"),  # Skip over spaces and tabs
-        ("MISMATCH", r"."),  # Any other character
+        ("KEYWORD", r"(nocap|huh|finna|yap|sigma)"),    # Keywords
+        ("ASSIGN", r"="),                               # Assignment operator
+        ("END", r";"),                                  # End of statement
+        ("ID", r"[A-Za-z_]\w*"),                        # Identifiers
+        ("STRING", r"\".*?\""),                         # String literals
+        ("LPAREN", r"\("),                              # Left parenthesis
+        ("RPAREN", r"\)"),                              # Right parenthesis
+        ("LBRACE", r"{"),                               # Left curly brace
+        ("RBRACE", r"}"),                               # Right curly brace
+        ("TEMPLATE_LITERAL", r"`[^`]*`"),               # Template literals
+        ("INCREMENT", r"\+\+"),                         # Increment operator
+        ("DECREMENT", r"--"),                           # Decrement operator
+        ("OP", r"[+*\/-]"),                             # Arithmetic operators
+        ("NUMBER", r"\d+(\.\d*)?"),                     # Numbers
+        ("COMMA", r","),                                # Comma
+        ("LT", r"<"),                                   # Less than
+        ("GT", r">"),                                   # Greater than
+        ("EQ", r"=="),                                  # Equal to
+        ("GE", r">="),                                  # Greater than or equal to
+        ("LE", r"<="),                                  # Less than or equal to
+        ("NE", r"!="),                                  # Not equal to
+        ("AND", r"&&"),                                 # Logical and
+        ("OR", r"\|\|"),                                # Logical or
+        ("NEWLINE", r"\n"),                             # Line endings
+        ("COMMENT", r"#.*"),                            # Single-line comments
+        ("SKIP", r"[ \t]+"),                            # Skip over spaces and tabs
+        ("MISMATCH", r"."),                             # Any other character
     ]
 
     tok_regex = "|".join("(?P<%s>%s)" % pair for pair in token_specification)

@@ -86,7 +86,7 @@ def parse_print(it):
 def parse_function_call(it, func_name):
     kind, value = next(it)
     if kind != "LPAREN":
-        raise SyntaxError(f"Expected '(', got {kind} {value}")
+        raise SyntaxError(f"Expected '(', got {kind} - {value}")
     args = []
     while True:
         kind, value = next(it)
@@ -131,7 +131,7 @@ def parse_while(it):
         elif kind == "RBRACE":
             break
         else:
-            raise SyntaxError(f"Invalid while loop body {kind} {value}")
+            raise SyntaxError(f"Invalid while loop body {kind} - {value}")
     
     return f"while ({''.join(condition)}) {{\n{''.join(body)}\n}}"
 
@@ -161,4 +161,4 @@ def parse_assignment(it, name):
         assignment = f"{name}--;\n"
         next(it)  # Skip the ';' token
         return assignment
-    raise SyntaxError(f"Invalid assignment {kind} {value}")
+    raise SyntaxError(f"Invalid assignment {kind} - {value}")
