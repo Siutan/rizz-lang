@@ -1,0 +1,16 @@
+#fileName: test.rizz
+
+nocap myName = "jeff";
+huh myAge = 28;
+
+finna sayHello(name, age) {
+    yap(`hello ${name}, you are ${age}`);
+}
+
+sayHello(myName, myAge);
+
+huh i = 0;
+sigma (i < 5) {
+    yap(i);
+    i++;
+}
