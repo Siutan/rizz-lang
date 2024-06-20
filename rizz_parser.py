@@ -21,6 +21,7 @@ def parse(tokens):
             yield parse_function_call(it, value)
         token = next(it, None)
 
+
 def parse_declaration(it, var_type):
     _, name = next(it)
     _, _ = next(it)  # Skip the '=' token
@@ -30,6 +31,7 @@ def parse_declaration(it, var_type):
         return f"{var_type} {name} = {value};"
     else:
         raise SyntaxError("Invalid declaration")
+
 
 def parse_function(it):
     _, name = next(it)
@@ -61,7 +63,9 @@ def parse_print(it):
     elif kind == "ID":
         content = value
     else:
-        raise SyntaxError(f"Invalid print statement: expected TEMPLATE_LITERAL or ID, got {kind}")
+        raise SyntaxError(
+            f"Invalid print statement: expected TEMPLATE_LITERAL or ID, got {kind}"
+        )
 
     kind, value = next(it)  # Expecting ')' token
     if kind != "RPAREN":
@@ -72,6 +76,7 @@ def parse_print(it):
         raise SyntaxError(f"Expected ';', got {kind}")
 
     return f"console.log({content});\n"
+
 
 def parse_assignment(it, name, kind, value):
     if kind == "ASSIGN":
@@ -96,7 +101,6 @@ def parse_assignment(it, name, kind, value):
     raise SyntaxError("Invalid assignment")
 
 
-
 def parse_function_call(it, func_name):
     args = []
     while True:
@@ -115,7 +119,6 @@ def parse_function_call(it, func_name):
     return f"{func_name}({', '.join(args)});\n"
 
 
-
 def parse_while(it):
     _, _ = next(it)  # Skip the 'sigma' keyword
     condition = []
@@ -132,6 +135,7 @@ def parse_while(it):
 
     return f"while ({''.join(condition)}) {{\n{body}\n}}"
 
+
 def parse_if_else(it):
     condition = []
 
@@ -145,7 +149,10 @@ def parse_if_else(it):
     _, _ = next(it)  # Skip the '{' token
     body = parse_block(it)
 
-    result = f"if ({''.join(condition)}) {{\n{body}\n}}"
+    # okay so this should be: result = f"if ({''.join(condition)}) {{\n{body}\n}}"
+    # but the left bracket is already included or just doesn't get sorted to the quickest way is to ignore it
+    # same thing for the else
+    result = f"if {''.join(condition)}) {{\n{body}\n}}"
 
     # Parse subsequent 'unless' blocks
     while True:
@@ -163,21 +170,29 @@ def parse_if_else(it):
                         condition.append(value)
                     _, _ = next(it)  # Skip the '{' token
                     body = parse_block(it)
-                    result += f" else if ({''.join(condition)}) {{\n{body}\n}}"
+                    result += f" else if {''.join(condition)}) {{\n{body}\n}}"
                 else:
                     condition = []
                     while True:
-                        kind, value = next(it)
                         if kind == "RPAREN":
                             break
                         condition.append(value)
+                        kind, value = next(it)
                     _, _ = next(it)  # Skip the '{' token
                     body = parse_block(it)
                     result += f" else {{\n{body}\n}}"
             else:
-                break
+                # If the next token is not an unless or noway block, it should be the end of the current block
+                if kind == "RBRACE":
+                    # Put the token back for the caller to handle the end of the block
+                    it = iter([(kind, value)] + list(it))
+                    break
+                else:
+                    raise SyntaxError(f"Unexpected token {kind} {value} after unless")
         else:
             break
+
+    print(result)
     return result
 
 
@@ -185,10 +200,12 @@ def parse_block(it):
     body = []
     while True:
         try:
-            kind, value = next(it)
+            token = next(it)
+            kind, value = token
         except StopIteration:
+            # i genuinely have no idea what to do here
             raise SyntaxError("Unexpected end of input while parsing block")
-        
+
         if kind == "KEYWORD":
             if value == "yap":
                 body.append(parse_print(it))
@@ -212,7 +229,7 @@ def parse_block(it):
                 if next_kind == "LPAREN":
                     body.append(parse_function_call(it, value))
                 else:
-                    # If it's not a function call, put the token back and parse as assignment
+                    # If it's not a function call, parse as assignment
                     body.append(parse_assignment(it, value, next_kind, next_value))
             else:
                 raise SyntaxError(f"Unexpected end of input after ID {value}")
@@ -220,5 +237,4 @@ def parse_block(it):
             break
         else:
             raise SyntaxError(f"Unexpected token {kind} {value}")
-    return ''.join(body)
-
+    return "".join(body)
