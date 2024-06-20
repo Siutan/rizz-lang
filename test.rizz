@@ -5,6 +5,14 @@ huh myAge = 28;
 
 finna sayHello(name, age) {
     yap(`hello ${name}, you are ${age}`);
+
+    noway (age < 18) {
+        yap(`you're a minor`);
+    } unless noway (age >= 18 && age < 65) {
+        yap(`you're an adult`);
+    } unless (age > 65) {
+        yap(`you're a senior`);
+    }
 }
 
 sayHello(myName, myAge);

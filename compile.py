@@ -1,5 +1,5 @@
 from lexer import tokenize
-from parser import parse
+from rizz_parser import parse
 import os
 
 with open("test.rizz", "r") as f:
